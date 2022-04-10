@@ -1,0 +1,31 @@
+{
+  "editor.formatOnSaveTimeout": 1500,
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "files.exclude": {
+    "**/.git": true, // this is a default value
+    "**/.DS_Store": true, // this is a default value
+    "**/._.DS_Store": true,
+    // named "node_modules" from
+    // the explore tree
+    // alternative version
+    // this excludes the folder
+    "node_modules": true,
+  },
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "todo-tree.general.tags": ["TODO", "FIXME", "FUTURE"],
+  "cSpell.words": [
+  ],
+  "css.validate": false,
+  "editor.quickSuggestions": {
+    "strings": true
+  }
+}
