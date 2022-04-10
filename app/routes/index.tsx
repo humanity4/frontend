@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react';
+import { Auth0Profile } from 'remix-auth-auth0';
 import { route } from 'routes-gen';
 import { auth, getSession } from '~/utils/auth.server';
 
@@ -9,20 +10,14 @@ import { FolderIcon, HomeIcon, MenuIcon, UsersIcon, XIcon } from '@heroicons/rea
 import { json, LoaderFunction, redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 
-type LoaderData = {
-  error: { message: string } | null;
-};
+type LoaderData = { profile: Auth0Profile };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // await auth.isAuthenticated(request, { successRedirect: '/private' });
-  // const session = await getSession(request.headers.get('Cookie'));
-  // const error = session.get(auth.sessionErrorKey) as LoaderData['error'];
-  // return json<LoaderData>({ error });
+  const profile = await auth.isAuthenticated(request, {
+    failureRedirect: '/login',
+  });
 
-  // TODO: Check if session else
-  // return redirect('/login');
-
-  return null; // TODO: return user and other info
+  return json<LoaderData>({ profile });
 };
 
 const navigation = [
@@ -32,8 +27,14 @@ const navigation = [
   { name: 'Sponsors', href: '#', icon: FolderIcon, current: false },
 ];
 
-export default function Example() {
+export default function Index() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { profile } = useLoaderData<LoaderData>();
+
+  const { displayName, emails } = profile;
+
+  const username = displayName || (emails.length ? emails[0] : '');
 
   return (
     <>
@@ -124,7 +125,7 @@ export default function Example() {
                         />
                       </div>
                       <div className="ml-3">
-                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">Username</p>
+                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
                         <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
                       </div>
                     </div>
@@ -181,7 +182,7 @@ export default function Example() {
                     />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Username</p>
+                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
                     <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
                   </div>
                 </div>
