@@ -29,6 +29,7 @@ const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
   { name: 'Coordinators', href: '#', icon: UsersIcon, current: false },
   { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+  { name: 'Sponsors', href: '#', icon: FolderIcon, current: false },
 ];
 
 export default function Example() {
