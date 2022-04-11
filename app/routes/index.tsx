@@ -36,6 +36,8 @@ export default function Index() {
 
   const username = displayName || (emails.length ? emails[0] : '');
 
+  const logoutLink = <a href={route('/logout')}>Log out</a>;
+
   return (
     <>
       <div>
@@ -126,7 +128,7 @@ export default function Index() {
                       </div>
                       <div className="ml-3">
                         <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
-                        <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
+                        <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700">{logoutLink}</p>
                       </div>
                     </div>
                   </a>
@@ -183,7 +185,7 @@ export default function Index() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
-                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
+                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">{logoutLink}</p>
                   </div>
                 </div>
               </a>

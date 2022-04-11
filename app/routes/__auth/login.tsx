@@ -20,9 +20,14 @@ export default function Screen() {
   const { error } = useLoaderData<LoaderData>();
 
   return (
-    <Form method="post" action={route('/auth')}>
+    <Form method="post" action={route('/auth')} className="flex flex-col items-center mt-11">
       {error ? <div>{error.message}</div> : null}
-      <button>Sign In with Auth0</button>
+      <button
+        type="submit"
+        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Log In
+      </button>
     </Form>
   );
 }
