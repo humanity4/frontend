@@ -1,4 +1,6 @@
-export const AUTH0_RETURN_TO_URL = process.env.AUTH0_RETURN_TO_URL || `https://${process.env.VERCEL_URL}`;
+export const AUTH0_RETURN_TO_URL =
+  process.env.AUTH0_RETURN_TO_URL ||
+  `https://${process.env.VERCEL_ENV === 'production' ? 'frontend-humanity4.vercel.app' : process.env.VERCEL_URL}`;
 export const AUTH0_CALLBACK_URL = process.env.AUTH0_CALLBACK_URL! || `https://${process.env.VERCEL_URL}/callback`;
 export const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID!;
 export const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET!;
