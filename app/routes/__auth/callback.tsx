@@ -1,10 +1,14 @@
 import type { LoaderFunction } from '@remix-run/node';
-
 import { auth } from '~/utils/auth.server';
+import { authDance } from '~/utils/cookies.server';
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const cookieHeader = request.headers.get('Cookie');
+
+  const cookie = (await authDance.parse(cookieHeader)) || {};
+
   return auth.authenticate('auth0', request, {
-    successRedirect: '/',
-    failureRedirect: '/login',
+    successRedirect: cookie.redirectTo || '/',
+    failureRedirect: '/',
   });
 };
