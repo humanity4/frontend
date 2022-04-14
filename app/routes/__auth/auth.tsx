@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/node';
-import { auth } from '~/utils/auth.server';
+import { Auth } from '~/utils/auth.server';
 
 export const loader: LoaderFunction = async ({ request }) => {
-  return auth.authenticate('auth0', request);
+  return Auth(request).authenticate('auth0', request);
 };

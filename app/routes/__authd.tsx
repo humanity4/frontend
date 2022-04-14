@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react';
 import Avatar from 'react-avatar';
 import { Auth0Profile } from 'remix-auth-auth0';
 import { route } from 'routes-gen';
-import { auth } from '~/utils/auth.server';
+import { Auth } from '~/utils/auth.server';
 
 import { Dialog, Transition } from '@headlessui/react';
 import { FolderIcon, HomeIcon, MenuIcon, UsersIcon, XIcon } from '@heroicons/react/outline';
@@ -16,18 +16,18 @@ import { redirectToCookie } from '../utils/cookies.server';
 type LoaderData = { profile: Auth0Profile };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const profile = await auth.isAuthenticated(request);
+  const profile = await Auth(request).isAuthenticated(request);
 
   if (!profile) {
     const cookieHeader = request.headers.get('Cookie');
-    const cookie = (await redirectToCookie.parse(cookieHeader)) || {};
+    const cookie = (await redirectToCookie(request).parse(cookieHeader)) || {};
     const redirectTo = new URL(request.url).pathname;
     cookie.redirectTo = redirectTo;
 
     return redirect('/auth', {
       headers: {
         // Add cookie to redirect to target page
-        'Set-Cookie': await redirectToCookie.serialize(cookie, {
+        'Set-Cookie': await redirectToCookie(request).serialize(cookie, {
           expires: new Date(Date.now() + 10000),
         }),
       },
@@ -39,7 +39,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     {
       headers: {
         // Used up the redirect so expire it
-        'Set-Cookie': await redirectToCookie.serialize('', { expires: new Date(0) }),
+        'Set-Cookie': await redirectToCookie(request).serialize('', { expires: new Date(0) }),
       },
     }
   );
