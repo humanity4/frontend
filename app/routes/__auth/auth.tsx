@@ -1,13 +1,6 @@
-// Example of route that is just an API
-// <Form method="post" action="/auth0">...</Form>
+import type { LoaderFunction } from '@remix-run/node';
+import { Auth } from '~/utils/auth.server';
 
-import type { ActionFunction, LoaderFunction } from '@remix-run/node';
-import { auth } from '~/utils/auth.server';
-
-import { redirect } from '@remix-run/node';
-
-export const loader: LoaderFunction = async () => redirect('/');
-
-export const action: ActionFunction = ({ request }) => {
-  return auth.authenticate('auth0', request);
+export const loader: LoaderFunction = async ({ request }) => {
+  return Auth(request).authenticate('auth0', request);
 };
