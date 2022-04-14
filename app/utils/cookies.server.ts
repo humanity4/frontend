@@ -1,17 +1,23 @@
-import { createCookie } from '@remix-run/node';
+import { Cookie, createCookie } from '@remix-run/node';
 
 import { SECRETS } from '../constants/index.server';
 import { Urls } from './auth.server';
 
-export const redirectToCookie = (request: Request) => {
-  const { DOMAIN } = Urls(request);
+let cookie: Cookie;
 
-  return createCookie('redirect-to', {
-    domain: DOMAIN,
-    sameSite: 'lax',
-    path: '/',
-    httpOnly: true,
-    secrets: [SECRETS],
-    secure: process.env.NODE_ENV === 'production',
-  });
+export const redirectToCookie = (request: Request) => {
+  if (!cookie) {
+    const { DOMAIN } = Urls(request);
+
+    cookie = createCookie('redirect-to', {
+      domain: DOMAIN,
+      sameSite: 'lax',
+      path: '/',
+      httpOnly: true,
+      secrets: [SECRETS],
+      secure: process.env.NODE_ENV === 'production',
+    });
+  }
+
+  return cookie;
 };
