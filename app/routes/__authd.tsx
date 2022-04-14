@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react';
+import Avatar from 'react-avatar';
 import { Auth0Profile } from 'remix-auth-auth0';
 import { route } from 'routes-gen';
 import { auth } from '~/utils/auth.server';
@@ -8,9 +9,9 @@ import { auth } from '~/utils/auth.server';
 import { Dialog, Transition } from '@headlessui/react';
 import { FolderIcon, HomeIcon, MenuIcon, UsersIcon, XIcon } from '@heroicons/react/outline';
 import { json, LoaderFunction, redirect } from '@remix-run/node';
-import { Outlet, useLoaderData, useMatches } from '@remix-run/react';
+import { Link, Outlet, useLoaderData, useMatches } from '@remix-run/react';
 
-import { authDance } from '../utils/cookies.server';
+import { redirectToCookie } from '../utils/cookies.server';
 
 type LoaderData = { profile: Auth0Profile };
 
@@ -19,18 +20,29 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   if (!profile) {
     const cookieHeader = request.headers.get('Cookie');
-    const cookie = (await authDance.parse(cookieHeader)) || {};
+    const cookie = (await redirectToCookie.parse(cookieHeader)) || {};
     const redirectTo = new URL(request.url).pathname;
     cookie.redirectTo = redirectTo;
 
     return redirect('/auth', {
       headers: {
-        'Set-Cookie': await authDance.serialize(cookie),
+        // Add cookie to redirect to target page
+        'Set-Cookie': await redirectToCookie.serialize(cookie, {
+          expires: new Date(Date.now() + 10000),
+        }),
       },
     });
   }
 
-  return json<LoaderData>({ profile });
+  return json<LoaderData>(
+    { profile },
+    {
+      headers: {
+        // Used up the redirect so expire it
+        'Set-Cookie': await redirectToCookie.serialize('', { expires: new Date(0) }),
+      },
+    }
+  );
 };
 
 const navItems = [
@@ -43,9 +55,11 @@ export default function Index() {
 
   const { profile } = useLoaderData<LoaderData>();
 
-  const { displayName, emails } = profile;
+  const { displayName, photos } = profile;
 
-  const username = displayName || (emails.length ? emails[0] : '');
+  const photoSrc = photos[0]?.value;
+
+  const avatar = <Avatar className="inline-block h-10 w-10 rounded-full" size="40" name={displayName} src={photoSrc} />;
 
   const logoutLink = <a href={route('/logout')}>Log out</a>;
 
@@ -104,14 +118,14 @@ export default function Index() {
                     <img
                       className="h-8 w-auto"
                       // src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                      alt="Sister"
+                      alt="Voolik"
                     />
                   </div>
                   <nav className="mt-5 px-2 space-y-1">
                     {matchedNavigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current
                             ? 'bg-gray-100 text-gray-900'
@@ -127,22 +141,16 @@ export default function Index() {
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
                 <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                   <div className="flex-shrink-0 group block">
                     <div className="flex items-center">
-                      <div>
-                        <img
-                          className="inline-block h-10 w-10 rounded-full"
-                          // src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
-                      </div>
+                      <div>{avatar}</div>
                       <div className="ml-3">
-                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
+                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">{displayName}</p>
                         <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700">{logoutLink}</p>
                       </div>
                     </div>
@@ -163,14 +171,14 @@ export default function Index() {
                 <img
                   className="h-8 w-auto"
                   // src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                  alt="Sister"
+                  alt="Voolik"
                 />
               </div>
               <nav className="mt-5 flex-1 px-2 bg-white space-y-1">
                 {matchedNavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className={classNames(
                       item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                       'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
@@ -184,22 +192,16 @@ export default function Index() {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </nav>
             </div>
             <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
               <div className="flex-shrink-0 w-full group block">
                 <div className="flex items-center">
-                  <div>
-                    <img
-                      className="inline-block h-9 w-9 rounded-full"
-                      // src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                  </div>
+                  <div>{avatar}</div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{username}</p>
+                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{displayName}</p>
                     <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">{logoutLink}</p>
                   </div>
                 </div>

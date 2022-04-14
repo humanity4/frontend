@@ -1,7 +1,6 @@
 export const DOMAIN =
-  process.env.DOMAIN || process.env.VERCEL_ENV === 'production'
-    ? 'frontend-humanity4.vercel.app'
-    : process.env.VERCEL_URL;
+  process.env.DOMAIN ||
+  (process.env.VERCEL_ENV === 'production' ? 'frontend-humanity4.vercel.app' : process.env.VERCEL_URL);
 
 export const AUTH0_RETURN_TO_URL = process.env.AUTH0_RETURN_TO_URL || `https://${DOMAIN}`;
 export const AUTH0_CALLBACK_URL = process.env.AUTH0_CALLBACK_URL! || `https://${DOMAIN}/callback`;
