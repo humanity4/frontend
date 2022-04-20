@@ -28,7 +28,7 @@ export const getStripeSession = async (priceId: string, domainUrl: string): Prom
     payment_method_types: ['card'],
     line_items: lineItems,
     success_url: `${domainUrl}/donate/success`,
-    cancel_url: `${domainUrl}/donate/cancelled`,
+    cancel_url: `${domainUrl}/donate/canceled`,
   });
   return session.url;
 };
