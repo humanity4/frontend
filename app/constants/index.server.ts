@@ -4,3 +4,4 @@ export const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN!;
 export const AUTH0_LOGOUT_URL = process.env.AUTH0_LOGOUT_URL!;
 export const SECRETS = process.env.SECRETS!;
 export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY!;
+export const API_URL = process.env.API_URL!;
